@@ -46,6 +46,7 @@ def generate_csv2(file_site, step=1):
     raw_data['mid_price'] = (raw_data['buy1'] + raw_data['sale1']) / 2
     mid_price = raw_data.pop('mid_price')
     raw_data.insert(5, 'mid_price', mid_price)
+    mid_price = raw_data.mid_price.tolist()
 
     col_name = raw_data.columns.tolist()
     col_name.insert(6, 'VW_Avg_buy_price')
@@ -53,12 +54,12 @@ def generate_csv2(file_site, step=1):
     col_name.insert(8, 'aggressor_side')
     col_name.insert(9, 'relative_buy_vol')
     col_name.insert(10, 'relative_sale_vol')
-    col_name.insert(11, 'VM_Avg_price')
-    col_name.insert(12, 'VM_Avg_price_minus_current_price')
+    col_name.insert(11, 'VW_Avg_price')
+    col_name.insert(12, 'VW_Avg_price_minus_current_price')
     # create the csv file in which we are going to write the data
-    csv_file = open('H:\Wechat\WeChat Files\hhufjdd\Files\AI&FintechLab 2018 Material\Data\database_SH600031_0817.csv', 'w', newline='')
+    csv_file = open('H:\Wechat\WeChat Files\hhufjdd\Files\AI&FintechLab 2018 Material\Data\database_SH600031_0820.csv', 'w', newline='')
     writer = csv.writer(csv_file)
-    writer.writerow(col_name + ['next_vwap', 'next_delta', '30s_vwap', '30s_delta'])
+    writer.writerow(col_name + ['next_vwap', 'next_delta', '30s_vwap', '30s_delta', 'mid_price_delta'])
 
     price = raw_data.price.tolist()
     vol = raw_data.vol.tolist()
@@ -163,7 +164,7 @@ def generate_csv2(file_site, step=1):
             for ind in range(-10, 10):
                 vmap_30s += (vol[y_start + 10 + ind] / total_vol_30s) * price[y_start + 10 + ind]
 
-        writer.writerow(row + [price[sample_start + 1], price[sample_start + 1] - price[sample_start], vmap_30s, (vmap_30s - price[sample_start])])
+        writer.writerow(row + [price[sample_start + 1], price[sample_start + 1] - price[sample_start], vmap_30s, (vmap_30s - price[sample_start]), mid_price[sample_start + 1] - mid_price[sample_start]])
         sample_start += step
 
     return

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.stats import pearsonr
+import csv
 from scipy.stats import kstest
 
 
@@ -8,12 +9,13 @@ from scipy.stats import kstest
 # y = [1, 2, 3]
 # print(pearsonr(x, y))
 
-f = open('H:\Wechat\WeChat Files\hhufjdd\Files\AI&FintechLab 2018 Material\Data\database_SH600031.csv', 'r')
+f = open('H:\Wechat\WeChat Files\hhufjdd\Files\AI&FintechLab 2018 Material\Data\database_SH600031_0817.csv', 'r')
 data = pd.read_csv(f)
 f.close()
 
 aggressor_side = data.aggressor_side.tolist()
 relative_buy_vol = data.relative_buy_vol.tolist()
+VM_Avg_price_minus_current_price = data.VM_Avg_price_minus_current_price.tolist()
 wb = data.wb.tolist()
 
 half_minute_delta = data['30s_delta'].tolist()
@@ -47,5 +49,14 @@ for i in range(0, len(aggressor_side)):
     else:
         aggressor_side_int.append(0)
 
-
+# calculate the correlation between each feature and the label
+col_name = data.columns.tolist()
+csv_file = open('H:\Wechat\WeChat Files\hhufjdd\Files\AI&FintechLab 2018 Material\Data\Correlation.csv', 'w', newline='')
+writer = csv.writer(csv_file)
+for i in range(4, 48):
+    if i != 17 and i != 18:
+        temp = pearsonr(data.iloc[:, i].tolist(), next_delta)
+        print(temp)
+        writer.writerow([col_name[i], temp[0], temp[1]])
+csv_file.close()
 
